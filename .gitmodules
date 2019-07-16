@@ -1,0 +1,3 @@
+[submodule "zfs-rollup"]
+	path = zfs-rollup
+	url = https://github.com/fracai/zfs-rollup.git
