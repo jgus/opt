@@ -6,8 +6,8 @@ source=$1
 target=$2
 
 target_has_snapshot () {
-    snapshot=$2
-    [[ ( "${snapshot}" != "" ) && ( "$(zfs list -H -t snapshot -o name -r ${target} | grep ^${target}@${snapshot}$ | wc -l)" != "0" ) ]]
+    snapshot=$1
+    [[ ( "${snapshot}" != "" ) && ( "$(echo $(zfs list -H -t snapshot -o name -r ${target} | grep ^${target}@${snapshot}$ | wc -l))" != "0" ) ]]
 }
 
 incremental=""
