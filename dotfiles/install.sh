@@ -4,7 +4,7 @@ set -e
 
 ~/opt/bin/allow_ssh.sh jgus
 
-chmod 600 ~/.dotfiles/ssh/config
+chmod 600 ~/opt/dotfiles/ssh/config
 
 for x in ssh/config bash_profile bashrc
 do
