@@ -1,0 +1,34 @@
+IdentityFile ~/.ssh/id_rsa-josh
+IdentityFile ~/.ssh/id_rsa-backup
+
+Host github
+	HostName github.com
+	User git
+	IdentityFile ~/.ssh/id_rsa-josh
+
+Host beast-remote
+	HostName 172.17.1.3
+	User josh
+	Port 22
+	ProxyCommand ssh -L 8080:beast:80 root@gustafson.me nc %h %p
+
+Host nightcrawler-remote
+        HostName 172.17.2.2
+        User josh
+        Port 22
+        ProxyCommand ssh root@gustafson.me nc %h %p
+
+Host gustafson-backup
+	HostName gustafson-backup.dyndns.org
+	Port 2222
+	User RemoteBackup
+	IdentityFile ~/.ssh/id_rsa-backup
+	LocalForward 20080 localhost:80
+	LocalForward 28384 192.168.1.4:8384
+
+Host kvm
+	HostName kvm.gustafson.me
+	User root
+	IdentityFile ~/.ssh/id_rsa-josh
+	KexAlgorithms +diffie-hellman-group1-sha1
+	Ciphers +aes128-cbc,3des-cbc
