@@ -3,7 +3,7 @@ set -e
 
 USER=${1:-jgus}
 
-mkdir -p ~/.ssh
+mkdir -p ~/.ssh || true
 touch ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 curl https://github.com/${USER}.keys >> ~/.ssh/authorized_keys
