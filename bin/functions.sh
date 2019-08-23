@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 take_snapshot () {
     root=$1
     name=$2
@@ -73,6 +71,89 @@ destroy_snapshot () {
     fi
 }
 
+zfs_cmd () {
+    if [[ "$1" == "" ]]
+    then
+        echo "zfs"
+    else
+        echo "ssh $1 zfs"
+    fi
+}
+
+zfs_list_snapshots () {
+    $(zfs_cmd $1) list -H -t snapshot -o name
+}
+
+zfs_has_snapshot () {
+    local DATASET=$1 ; shift
+    local SNAPSHOT=$1 ; shift
+    [[ ( "${SNAPSHOT}" == "" ) ]] && return 1
+    for EXISTING in "$@"
+    do
+        [[ "${EXISTING}" == "${DATASET}@${SNAPSHOT}" ]] && return 0
+    done
+    return 1
+}
+
+zfs_send_new_snapshots() {
+    local SOURCE_HOST=$1
+    local SOURCE_DATASET=$2
+    local TARGET_HOST=$3
+    local TARGET_DATASET=$4
+
+    local SOURCE_SNAPSHOTS_FULL
+    local TARGET_SNAPSHOTS_FULL
+    SOURCE_SNAPSHOTS_FULL=($(zfs_list_snapshots "${SOURCE_HOST}" | grep ^${SOURCE_DATASET}@))
+    TARGET_SNAPSHOTS_FULL=($(zfs_list_snapshots "${TARGET_HOST}" | grep ^${TARGET_DATASET}@))
+
+    local INCREMENTAL=""
+    for SNAPSHOT_FULL in "${SOURCE_SNAPSHOTS_FULL[@]}"
+    do
+        SNAPSHOT=${SNAPSHOT_FULL#${SOURCE_DATASET}@}
+        if zfs_has_snapshot "${TARGET_DATASET}" "${SNAPSHOT}" "${TARGET_SNAPSHOTS_FULL[@]}"
+        then
+            echo "Skipping snapshot ${SNAPSHOT}"
+        else
+            echo "Sending snapshot (${SOURCE_HOST})${SOURCE_DATASET}@${SNAPSHOT} -> (${TARGET_HOST})${TARGET_DATASET}"
+            $(zfs_cmd "${SOURCE_HOST}") send -v "${INCREMENTAL}" "${SOURCE_DATASET}@${SNAPSHOT}" | $(zfs_cmd "${TARGET_HOST}") receive -F "${TARGET_DATASET}"
+        fi
+        INCREMENTAL="-i @${SNAPSHOT}"
+    done
+
+    echo "Done sending ${SOURCE_DATASET}"
+}
+
+zfs_prune_sent_snapshots() {
+    local SOURCE_HOST=$1
+    local SOURCE_DATASET=$2
+    local TARGET_HOST=$3
+    local TARGET_DATASET=$4
+
+    local SOURCE_SNAPSHOTS_FULL
+    local TARGET_SNAPSHOTS_FULL
+    SOURCE_SNAPSHOTS_FULL=($(zfs_list_snapshots "${SOURCE_HOST}" | grep ^${SOURCE_DATASET}@))
+    TARGET_SNAPSHOTS_FULL=($(zfs_list_snapshots "${TARGET_HOST}" | grep ^${TARGET_DATASET}@))
+
+    local PREVIOUS=""
+    for SNAPSHOT_FULL in "${SOURCE_SNAPSHOTS_FULL[@]}"
+    do
+        SNAPSHOT=${SNAPSHOT_FULL#${SOURCE_DATASET}@}
+        if ! zfs_has_snapshot "${TARGET_DATASET}" "${SNAPSHOT}" "${TARGET_SNAPSHOTS_FULL[@]}"
+        then
+            echo "Target doesn't have ${SNAPSHOT}; ending prune"
+            return
+        fi
+        if [[ "${PREVIOUS}" != "" ]]
+        then
+            echo "Pruning local snapshot ${SOURCE_DATASET}@${PREVIOUS}"
+            #zfs destroy ${SOURCE_DATASET}@${PREVIOUS}
+        fi
+        PREVIOUS="${SNAPSHOT}"
+    done
+
+    echo "Done pruning ${SOURCE_DATASET}"
+}
+
 rsync_to_beast () {
     source=$1
     target=$2
@@ -82,53 +163,13 @@ rsync_to_beast () {
 }
 
 zfs_beast_has_snapshot () {
-    source=$1
-    target=d/groot/${source}
-    snapshot=$2
-    [[ ( "${snapshot}" != "" ) && ( "$(ssh root@beast zfs list -H -t snapshot -o name -r ${target} | grep ^${target}@${snapshot}$ | wc -l)" != "0" ) ]]
+    zfs_has_snapshot d/groot/$1 $2 $(zfs_list_snapshots root@beast)
 }
 
 zfs_send_to_beast () {
-    source=$1
-    target=d/groot/${source}
-
-    incremental=""
-    for snapshot_path in $(zfs list -H -t snapshot -s creation -o name -r ${source} | grep ^${source}@)
-    do
-        snapshot=${snapshot_path#${source}@}
-        if zfs_beast_has_snapshot ${source} ${snapshot}
-        then
-            echo "Skipping snapshot ${snapshot}"
-        else
-            echo "Sending: zfs send -v ${incremental} ${snapshot_path} | ssh root@beast zfs receive -F ${target}"
-            zfs send -v ${incremental} ${snapshot_path} | ssh root@beast zfs receive -F ${target}
-        fi
-        incremental="-i ${snapshot_path}"
-    done
-
-    echo "Done sending ${source}"
+    zfs_send_new_snapshots "" "${source}" root@beast "e/groot/${source}"
 }
 
 zfs_prune_sent_to_beast () {
-    source=$1
-    target=d/groot/${source}
-
-    previous=""
-    for snapshot_path in $(zfs list -H -t snapshot -s creation -o name -r ${source} | grep ^${source}@)
-    do
-        snapshot=${snapshot_path#${source}@}
-        if ! zfs_beast_has_snapshot ${source} ${snapshot}
-        then
-            echo "Beast doesn't have ${snapshot}; ending prune"
-            return
-        fi
-        if [[ "${previous}" != "" ]]
-        then
-            echo "Pruning local snapshot ${source}@${previous}"
-            zfs destroy ${source}@${previous}
-        fi
-        previous="${snapshot}"
-    done
-
-    echo "Done pruning ${source}"
+    zfs_prune_sent_snapshots "" "${source}" root@beast "e/groot/${source}"
 }
