@@ -2,7 +2,7 @@
 
 set -e
 
-source /usr/local/bin/functions.sh
+source "$( dirname "${BASH_SOURCE[0]}" )/functions.sh"
 
 FAT_ROOTS=( /recovery /boot/efi )
 ZFS_ROOTS=( system/root user/home user/docker user/images user/images/macos-amd user/images/macos-amd-data user/images/win-nv user/images/win-nv-data user/images/win-apps )
