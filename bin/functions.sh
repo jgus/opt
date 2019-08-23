@@ -157,13 +157,13 @@ zfs_prune_sent_snapshots() {
 rsync_to_beast () {
     source=$1
     target=$2
-    rsync -Praxy --existing --inplace --no-whole-file -e "ssh -T -o Compression=no -x" ${source}/ root@beast:/mnt/d/groot/${target}
-    rsync -Praxy --delete --ignore-existing --sparse -e "ssh -T -o Compression=no -x" ${source}/ root@beast:/mnt/d/groot/${target}
+    rsync -Praxy --existing --inplace --no-whole-file -e "ssh -T -o Compression=no -x" ${source}/ root@beast:/mnt/e/groot/${target}
+    rsync -Praxy --delete --ignore-existing --sparse -e "ssh -T -o Compression=no -x" ${source}/ root@beast:/mnt/e/groot/${target}
 
 }
 
 zfs_beast_has_snapshot () {
-    zfs_has_snapshot d/groot/$1 $2 $(zfs_list_snapshots root@beast)
+    zfs_has_snapshot e/groot/$1 $2 $(zfs_list_snapshots root@beast)
 }
 
 zfs_send_to_beast () {
