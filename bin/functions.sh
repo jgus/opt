@@ -104,10 +104,10 @@ zfs_send_new_snapshots() {
     local SOURCE_SNAPSHOTS_FULL
     local TARGET_SNAPSHOTS_FULL
     echo "Listing source snapshots..."
-    SOURCE_SNAPSHOTS_FULL=($(zfs_list_snapshots "${SOURCE_HOST}" | grep ^${SOURCE_DATASET}@))
+    SOURCE_SNAPSHOTS_FULL=($(zfs_list_snapshots "${SOURCE_HOST}" | grep ^${SOURCE_DATASET}@) | true)
     #echo "${SOURCE_SNAPSHOTS_FULL[@]}"
     echo "Listing target snapshots..."
-    TARGET_SNAPSHOTS_FULL=($(zfs_list_snapshots "${TARGET_HOST}" | grep ^${TARGET_DATASET}@))
+    TARGET_SNAPSHOTS_FULL=($(zfs_list_snapshots "${TARGET_HOST}" | grep ^${TARGET_DATASET}@) | true)
     #echo "${TARGET_SNAPSHOTS_FULL[@]}"
 
     echo "Processing snapshots..."
