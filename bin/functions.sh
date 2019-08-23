@@ -117,7 +117,7 @@ zfs_send_new_snapshots() {
             echo "Sending snapshot (${SOURCE_HOST})${SOURCE_DATASET}@${SNAPSHOT} -> (${TARGET_HOST})${TARGET_DATASET}"
             $(zfs_cmd "${SOURCE_HOST}") send -v "${INCREMENTAL}" "${SOURCE_DATASET}@${SNAPSHOT}" | $(zfs_cmd "${TARGET_HOST}") receive -F "${TARGET_DATASET}"
         fi
-        INCREMENTAL="-i @${SNAPSHOT}"
+        INCREMENTAL="-i ${SOURCE_DATASET}@${SNAPSHOT}"
     done
 
     echo "Done sending ${SOURCE_DATASET}"
