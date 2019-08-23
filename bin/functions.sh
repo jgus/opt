@@ -81,7 +81,7 @@ zfs_cmd () {
 }
 
 zfs_list_snapshots () {
-    $(zfs_cmd $1) list -H -t snapshot -o name
+    $(zfs_cmd $1) list -H -t snapshot -o name || true
 }
 
 zfs_has_snapshot () {
@@ -105,10 +105,10 @@ zfs_send_new_snapshots() {
     local TARGET_SNAPSHOTS_FULL
     echo "Listing source snapshots..."
     SOURCE_SNAPSHOTS_FULL=($(zfs_list_snapshots "${SOURCE_HOST}" | grep ^${SOURCE_DATASET}@))
-    echo "${SOURCE_SNAPSHOTS_FULL[@]}"
+    #echo "${SOURCE_SNAPSHOTS_FULL[@]}"
     echo "Listing target snapshots..."
     TARGET_SNAPSHOTS_FULL=($(zfs_list_snapshots "${TARGET_HOST}" | grep ^${TARGET_DATASET}@))
-    echo "${TARGET_SNAPSHOTS_FULL[@]}"
+    #echo "${TARGET_SNAPSHOTS_FULL[@]}"
 
     echo "Processing snapshots..."
     local INCREMENTAL=""
