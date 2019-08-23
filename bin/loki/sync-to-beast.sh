@@ -2,7 +2,7 @@
 
 set -e
 
-source "$( dirname "${BASH_SOURCE[0]}" )/functions.sh"
+source "$( dirname "${BASH_SOURCE[0]}" )/../functions.sh"
 
 ZFS_ROOTS=( boot z/root z/home z/docker )
 
