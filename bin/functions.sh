@@ -115,6 +115,7 @@ zfs_send_new_snapshots() {
             echo "Skipping snapshot ${SNAPSHOT}"
         else
             echo "Sending snapshot (${SOURCE_HOST})${SOURCE_DATASET}@${SNAPSHOT} -> (${TARGET_HOST})${TARGET_DATASET}"
+            echo "$(zfs_cmd "${SOURCE_HOST}") send -v ${INCREMENTAL} ${SOURCE_DATASET}@${SNAPSHOT} | $(zfs_cmd "${TARGET_HOST}") receive -F ${TARGET_DATASET}"
             $(zfs_cmd "${SOURCE_HOST}") send -v "${INCREMENTAL}" "${SOURCE_DATASET}@${SNAPSHOT}" | $(zfs_cmd "${TARGET_HOST}") receive -F "${TARGET_DATASET}"
         fi
         INCREMENTAL="-i ${SOURCE_DATASET}@${SNAPSHOT}"
