@@ -4,4 +4,7 @@ set -e
 
 source "$( dirname "${BASH_SOURCE[0]}" )/../functions.sh"
 
-zfs_send_new_snapshots "" $1 root@beast e/$(hostname)/$1
+for x in boot z/root z/home z/docker
+do
+    zfs_send_new_snapshots "" ${x} root@beast e/$(hostname)/${x}
+done
