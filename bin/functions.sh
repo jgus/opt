@@ -103,8 +103,8 @@ zfs_send_new_snapshots() {
 
     local SOURCE_SNAPSHOTS_FULL
     local TARGET_SNAPSHOTS_FULL
-    SOURCE_SNAPSHOTS_FULL=($(zfs_list_snapshots "${SOURCE_HOST}" | grep ^${SOURCE_DATASET}@))
-    TARGET_SNAPSHOTS_FULL=($(zfs_list_snapshots "${TARGET_HOST}" | grep ^${TARGET_DATASET}@))
+    SOURCE_SNAPSHOTS_FULL=($(zfs_list_snapshots "${SOURCE_HOST}" | grep ^${SOURCE_DATASET}@ || true))
+    TARGET_SNAPSHOTS_FULL=($(zfs_list_snapshots "${TARGET_HOST}" | grep ^${TARGET_DATASET}@ || true))
 
     local INCREMENTAL=""
     for SNAPSHOT_FULL in "${SOURCE_SNAPSHOTS_FULL[@]}"
@@ -129,11 +129,12 @@ zfs_prune_sent_snapshots() {
     local SOURCE_DATASET=$2
     local TARGET_HOST=$3
     local TARGET_DATASET=$4
+    echo "Pruning snapshots from ${SOURCE_HOST}:${SOURCE_DATASET} which have been sent to ${TARGET_HOST}:${TARGET_DATASET}"
 
     local SOURCE_SNAPSHOTS_FULL
     local TARGET_SNAPSHOTS_FULL
-    SOURCE_SNAPSHOTS_FULL=($(zfs_list_snapshots "${SOURCE_HOST}" | grep ^${SOURCE_DATASET}@))
-    TARGET_SNAPSHOTS_FULL=($(zfs_list_snapshots "${TARGET_HOST}" | grep ^${TARGET_DATASET}@))
+    SOURCE_SNAPSHOTS_FULL=($(zfs_list_snapshots "${SOURCE_HOST}" | grep ^${SOURCE_DATASET}@ || true))
+    TARGET_SNAPSHOTS_FULL=($(zfs_list_snapshots "${TARGET_HOST}" | grep ^${TARGET_DATASET}@ || true))
 
     local PREVIOUS=""
     for SNAPSHOT_FULL in "${SOURCE_SNAPSHOTS_FULL[@]}"
@@ -146,13 +147,13 @@ zfs_prune_sent_snapshots() {
         fi
         if [[ "${PREVIOUS}" != "" ]]
         then
-            echo "Pruning local snapshot ${SOURCE_DATASET}@${PREVIOUS}"
-            #zfs destroy ${SOURCE_DATASET}@${PREVIOUS}
+            echo "Pruning snapshot ${SOURCE_HOST}:${SOURCE_DATASET}@${PREVIOUS}"
+            $(zfs_cmd ${SOURCE_HOST}) destroy ${SOURCE_DATASET}@${PREVIOUS}
         fi
         PREVIOUS="${SNAPSHOT}"
     done
 
-    echo "Done pruning ${SOURCE_DATASET}"
+    echo "Done pruning ${SOURCE_HOST}:${SOURCE_DATASET}"
 }
 
 rsync_to_beast () {
@@ -168,9 +169,9 @@ zfs_beast_has_snapshot () {
 }
 
 zfs_send_to_beast () {
-    zfs_send_new_snapshots "" "${source}" root@beast "e/groot/${source}"
+    zfs_send_new_snapshots "" "$1" root@beast "e/groot/$1"
 }
 
 zfs_prune_sent_to_beast () {
-    zfs_prune_sent_snapshots "" "${source}" root@beast "e/groot/${source}"
+    zfs_prune_sent_snapshots "" "$1" root@beast "e/groot/$1"
 }
