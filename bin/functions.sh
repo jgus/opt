@@ -161,6 +161,33 @@ zfs_prune_sent_snapshots() {
     echo "Done pruning ${SOURCE_HOST}:${SOURCE_DATASET}"
 }
 
+zfs_prune_empty_snapshots() {
+    local HOST=$1
+    local DATASET=$2
+    echo "Pruning empty snapshots from ${HOST}:${DATASET}"
+
+    echo "Listing snapshots..."
+    local SNAPSHOTS_FULL
+    SNAPSHOTS_FULL=($(zfs_list_snapshots "${HOST}" | grep ^${DATASET}@ || true))
+
+    local PREVIOUS=""
+    for SNAPSHOT_FULL in "${SNAPSHOTS_FULL[@]}"
+    do
+        if [[ "${PREVIOUS}" != "" ]]
+        then
+            DIFF=$($(zfs_cmd ${HOST}) diff -H ${PREVIOUS} ${SNAPSHOT_FULL} | wc -l)
+            if [[ "${DIFF}" == "0" ]]
+            then
+                echo "${PREVIOUS} is empty; pruning..."
+                $(zfs_cmd ${HOST}) destroy ${PREVIOUS}
+            fi
+        fi
+        PREVIOUS="${SNAPSHOT_FULL}"
+    done
+
+    echo "Done pruning snapshots from ${HOST}:${DATASET}"
+}
+
 rsync_to_beast () {
     source=$1
     target=$2
