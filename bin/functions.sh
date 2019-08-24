@@ -81,7 +81,7 @@ zfs_cmd () {
 }
 
 zfs_list_snapshots () {
-    $(zfs_cmd $1) list -H -t snapshot -o name
+    $(zfs_cmd $1) list -H -t snapshot -o name || true
 }
 
 zfs_has_snapshot () {
@@ -103,9 +103,12 @@ zfs_send_new_snapshots() {
 
     local SOURCE_SNAPSHOTS_FULL
     local TARGET_SNAPSHOTS_FULL
+    echo "Listing source snapshots..."
     SOURCE_SNAPSHOTS_FULL=($(zfs_list_snapshots "${SOURCE_HOST}" | grep ^${SOURCE_DATASET}@ || true))
+    echo "Listing target snapshots..."
     TARGET_SNAPSHOTS_FULL=($(zfs_list_snapshots "${TARGET_HOST}" | grep ^${TARGET_DATASET}@ || true))
 
+    echo "Processing snapshots..."
     local INCREMENTAL=""
     for SNAPSHOT_FULL in "${SOURCE_SNAPSHOTS_FULL[@]}"
     do
@@ -131,7 +134,9 @@ zfs_prune_sent_snapshots() {
     local TARGET_DATASET=$4
     echo "Pruning snapshots from ${SOURCE_HOST}:${SOURCE_DATASET} which have been sent to ${TARGET_HOST}:${TARGET_DATASET}"
 
+    echo "Listing source snapshots..."
     local SOURCE_SNAPSHOTS_FULL
+    echo "Listing target snapshots..."
     local TARGET_SNAPSHOTS_FULL
     SOURCE_SNAPSHOTS_FULL=($(zfs_list_snapshots "${SOURCE_HOST}" | grep ^${SOURCE_DATASET}@ || true))
     TARGET_SNAPSHOTS_FULL=($(zfs_list_snapshots "${TARGET_HOST}" | grep ^${TARGET_DATASET}@ || true))

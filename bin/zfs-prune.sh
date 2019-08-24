@@ -2,6 +2,6 @@
 
 set -e
 
-source /usr/local/bin/functions.sh
+source "$( dirname "${BASH_SOURCE[0]}" )/functions.sh"
 
 zfs_prune_sent_to_beast $1
