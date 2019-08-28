@@ -7,7 +7,6 @@ docker run \
   --name plex \
   --net host \
   --gpus all \
-  --device /dev/dri:/dev/dri \
   -e PUID=$(id -u plex) \
   -e PGID=$(id -g plex) \
   -e VERSION=latest \
