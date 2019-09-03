@@ -1,5 +1,6 @@
-IdentityFile ~/.ssh/id_rsa-josh
-IdentityFile ~/.ssh/id_rsa-backup
+Host *
+	IdentityFile ~/.ssh/id_rsa-josh
+	IdentityFile ~/.ssh/id_rsa-backup
 
 Host github
 	HostName github.com
