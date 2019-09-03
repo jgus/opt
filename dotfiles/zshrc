@@ -1,7 +1,9 @@
 . ~/.zshrc-grml
+
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 setopt appendhistory beep notify
 bindkey -e
+
 [[ -f ~/.zshrc-local ]] && . ~/.zshrc-local
