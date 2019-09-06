@@ -81,7 +81,7 @@ zfs_cmd () {
 }
 
 zfs_list_snapshots () {
-    $(zfs_cmd $1) list -H -t snapshot -o name || true
+    $(zfs_cmd $1) list -H -t snapshot -o name | grep -v @znap_.\*_frequent | grep -v @znap_.\*_hourly || true
 }
 
 zfs_has_snapshot () {
