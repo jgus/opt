@@ -6,4 +6,7 @@ SAVEHIST=1000
 setopt appendhistory beep notify
 bindkey -e
 
+which yay &>/dev/null && alias yay='sudo -u builder yay'
+which yay &>/dev/null && alias yayinst='sudo -u builder yay -Syu --needed'
+
 [[ -f ~/.zshrc-local ]] && . ~/.zshrc-local
