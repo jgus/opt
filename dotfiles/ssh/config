@@ -33,3 +33,15 @@ Host kvm
 	IdentityFile ~/.ssh/id_rsa-josh
 	KexAlgorithms +diffie-hellman-group1-sha1
 	Ciphers +aes128-cbc,3des-cbc
+
+Host builder1
+	HostName builder1
+	User josh
+	IdentityFile ~/.ssh/id_rsa-josh
+	ForwardAgent yes
+
+Host builder2
+	HostName builder2
+	User josh
+	IdentityFile ~/.ssh/id_rsa-josh
+	ForwardAgent yes
