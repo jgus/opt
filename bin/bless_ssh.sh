@@ -3,5 +3,5 @@ set -e
 
 TARGET=$1
 
-scp ~/.ssh/id_rsa-* ${TARGET}:~/.ssh
-scp ~/.ssh/config ${TARGET}:~/.ssh
+scp -4 ~/.ssh/id_rsa-* ${TARGET}:~/.ssh
+scp -4 ~/.ssh/config ${TARGET}:~/.ssh
