@@ -9,6 +9,8 @@ DATASETS=(
     z/root
     z/home
     z/docker
+    z/images
+    z/git
 )
 
 for x in "${DATASETS[@]}"
