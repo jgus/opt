@@ -9,6 +9,10 @@ DATASETS=(
     z/root
     z/home
     z/docker
+    z/volumes
+    $(zfs list -o name | grep \^z/volumes/ | grep -v /scratch\$)
+    z/images
+    $(zfs list -o name | grep \^z/images/ | grep -v /scratch\$)
 )
 
 for x in "${DATASETS[@]}"
