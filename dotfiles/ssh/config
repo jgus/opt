@@ -45,3 +45,31 @@ Host builder2
 	User josh
 	IdentityFile ~/.ssh/id_rsa-josh
 	ForwardAgent yes
+
+Host loom-gpu-a
+	HostName 192.168.0.20
+	Port 65500
+	User loomai
+	# Password L00minary
+	ForwardAgent yes
+
+Host loom-gpu-b
+	HostName 192.168.0.21
+	Port 65500
+	User loomai
+	# Password L00minary
+	ForwardAgent yes
+
+Host loom-gpu-c
+	HostName 192.168.0.22
+	Port 65500
+	User loomai
+	# Password L00minary
+	ForwardAgent yes
+
+Host loom-gpu-d
+	HostName 192.168.0.27
+	Port 65500
+	User loomai
+	# Password L00minary
+	ForwardAgent yes
