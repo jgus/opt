@@ -5,16 +5,15 @@ set -e
 source "$( dirname "${BASH_SOURCE[0]}" )/../functions.sh"
 
 DATASETS=(
-    cold
-    external
-    external/brown
     hot
+    warm
     incoming
+    cold
     jail/nightcrawler
     jail/syncthing_1
     scratch/published
-    time-machine
-    warm
+    external
+    external/brown
 )
 
 for x in "${DATASETS[@]}"
