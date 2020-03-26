@@ -76,7 +76,7 @@ zfs_cmd () {
     then
         echo "zfs"
     else
-        echo "ssh $1 zfs"
+        echo "ssh -4 $1 zfs"
     fi
 }
 
@@ -191,8 +191,8 @@ zfs_prune_empty_snapshots() {
 rsync_to_beast () {
     source=$1
     target=$2
-    rsync -Praxy --existing --inplace --no-whole-file -e "ssh -T -o Compression=no -x" ${source}/ root@beast:/mnt/e/groot/${target}
-    rsync -Praxy --delete --ignore-existing --sparse -e "ssh -T -o Compression=no -x" ${source}/ root@beast:/mnt/e/groot/${target}
+    rsync -Praxy --existing --inplace --no-whole-file -e "ssh -4 -T -o Compression=no -x" ${source}/ root@beast:/mnt/e/groot/${target}
+    rsync -Praxy --delete --ignore-existing --sparse -e "ssh -4 -T -o Compression=no -x" ${source}/ root@beast:/mnt/e/groot/${target}
 
 }
 
