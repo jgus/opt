@@ -5,11 +5,12 @@ set -e
 source "$( dirname "${BASH_SOURCE[0]}" )/../functions.sh"
 
 rsync -arPx --delete /boot/ /boot/bak1
-rsync -arPx --delete /boot/ root@beast:/mnt/e/$(hostname)/boot
+rsync -arPx --delete /boot/ root@nas:/e/$(hostname)/boot
 
 DATASETS=(
     z/root
     z/home
+    $(zfs list -o name | grep \^z/home/ | grep -v /scratch\$ || true)
     z/docker
     z/volumes
     $(zfs list -o name | grep \^z/volumes/ | grep -v /scratch\$ || true)
@@ -21,5 +22,5 @@ DATASETS=(
 
 for x in "${DATASETS[@]}"
 do
-    zfs_send_new_snapshots "" ${x} root@beast e/$(hostname)/${x}
+    zfs_send_new_snapshots "" ${x} root@nas e/$(hostname)/${x}
 done
