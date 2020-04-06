@@ -1,6 +1,6 @@
 . ~/.zshrc-grml
 
-PATH="~/opt/bin:${PATH}"
+PATH="${HOME}/opt/bin:${PATH}"
 
 HISTFILE=~/.histfile
 HISTSIZE=1000

@@ -7,17 +7,17 @@ Host github
 	User git
 	IdentityFile ~/.ssh/id_rsa-josh
 
-Host beast-remote
-	HostName 172.17.1.3
+Host jarvis-remote
+	HostName jarvis
 	User josh
 	Port 22
-	ProxyCommand ssh -L 8080:beast:80 root@gustafson.me nc %h %p
+	ProxyCommand ssh -L 8080:jarvis:80 root@gustafson.me nc %h %p
 
-Host nightcrawler-remote
-        HostName 172.17.2.2
-        User josh
-        Port 22
-        ProxyCommand ssh root@gustafson.me nc %h %p
+Host strange-remote
+	HostName strange
+	User josh
+	Port 22
+	ProxyCommand ssh -L 10080:strange-ipmi:80 root@gustafson.me nc %h %p
 
 Host gustafson-backup
 	HostName gustafson-backup.dyndns.org
