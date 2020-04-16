@@ -1,0 +1,3 @@
+[submodule "src/xbanish"]
+	path = src/xbanish
+	url = https://github.com/jcs/xbanish.git
