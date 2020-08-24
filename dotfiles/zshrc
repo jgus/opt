@@ -1,3 +1,5 @@
+[[ -f ~/.profile ]] && . ~/.profile
+
 . ~/.zshrc-grml
 
 PATH="${HOME}/opt/bin:${PATH}"
