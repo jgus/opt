@@ -16,3 +16,5 @@ which yay &>/dev/null && alias yayinst='sudo -u builder yay -Syu --needed'
 alias bashtrace="PS4='+(\${BASH_SOURCE}:\${LINENO}): \${FUNCNAME[0]:+\${FUNCNAME[0]}(): }' bash -x"
 
 [[ -f ~/.zshrc-local ]] && . ~/.zshrc-local
+
+true
