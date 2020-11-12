@@ -13,7 +13,6 @@ do
             echo "Updating thumbnail in ${RAW}..."
             TEMP_FILE=$(mktemp)
             rawtherapee-cli -S -Y -j50 -o "${TEMP_FILE}.jpg" -c "${RAW}"
-            exiftool -OtherImage= -JpgFromRaw= -overwrite_original "${RAW}"
             case "$(exiftool -Orientation "${RAW}")" in
                 *90\ CW*|*270\ CCW*)
                     jpegtran -rotate 270 -outfile "${TEMP_FILE}-rot.jpg" "${TEMP_FILE}.jpg"
@@ -32,7 +31,8 @@ do
                     ;;
                 *) true ;;
             esac
-            exiftool -b "-PreviewImage<=${TEMP_FILE}.jpg" -OtherImage= -JpgFromRaw= -overwrite_original "${RAW}"
+            #exiftool -OtherImage= -JpgFromRaw= -b "-PreviewImage<=${TEMP_FILE}.jpg" -overwrite_original "${RAW}"
+            exiftool -b "-PreviewImage<=${TEMP_FILE}.jpg" -overwrite_original "${RAW}"
             rm "${TEMP_FILE}.jpg"
         fi
     done
