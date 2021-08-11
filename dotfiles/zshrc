@@ -1,7 +1,5 @@
 [[ -f ~/.profile ]] && . ~/.profile
 
-. ~/.zshrc-grml
-
 PATH="${HOME}/opt/bin:${PATH}"
 
 HISTFILE=~/.histfile
@@ -14,6 +12,17 @@ which yay &>/dev/null && alias yay='sudo -u builder yay'
 which yay &>/dev/null && alias yayinst='sudo -u builder yay -Syu --needed'
 
 alias bashtrace="PS4='+(\${BASH_SOURCE}:\${LINENO}): \${FUNCNAME[0]:+\${FUNCNAME[0]}(): }' bash -x"
+
+export ZSH="${HOME}/.oh-my-zsh"
+ZSH_THEME="agnoster"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+plugins=(
+  common-aliases
+  git
+  rsync
+)
+which brew &>/dev/null && plugins+=(brew)
+source $ZSH/oh-my-zsh.sh
 
 [[ -f ~/.zshrc-local ]] && . ~/.zshrc-local
 
