@@ -1,6 +1,8 @@
 Host *
+	IdentityFile ~/.ssh/id_ed25519-josh
 	IdentityFile ~/.ssh/id_rsa-josh
 	IdentityFile ~/.ssh/id_rsa-backup
+	IdentityFile ~/.ssh/id-minecraft
 
 Host 172.17.*
 	StrictHostKeyChecking no
@@ -19,17 +21,26 @@ Host github
 	User git
 	IdentityFile ~/.ssh/id_rsa-josh
 
+Host router-remote
+	HostName router.gustafson.me
+	User root
+	LocalForward 1080 localhost:80
+
 Host jarvis-remote
 	HostName jarvis
 	User josh
-	Port 22
-	ProxyCommand ssh -L 8080:jarvis:80 root@gustafson.me nc %h %p
+	ProxyCommand ssh root@router.gustafson.me nc %h %p
+
+Host jarvis-root-remote
+	HostName jarvis
+	User root
+	ProxyCommand ssh root@router.gustafson.me nc %h %p
 
 Host strange-remote
 	HostName strange
 	User josh
 	Port 22
-	ProxyCommand ssh -L 10080:strange-ipmi:80 root@gustafson.me nc %h %p
+	ProxyCommand ssh -L 10080:strange-ipmi:80 root@router.gustafson.me nc %h %p
 
 Host gustafson-backup
 	HostName gustafson-backup.dyndns.org
@@ -45,3 +56,10 @@ Host kvm
 	IdentityFile ~/.ssh/id_rsa-josh
 	KexAlgorithms +diffie-hellman-group1-sha1
 	Ciphers +aes128-cbc,3des-cbc
+
+Host minecraft.gustafson.me
+	HostName minecraft.gustafson.me
+	Port 25522
+	User minecraft
+	ForwardAgent yes
+
