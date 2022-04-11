@@ -8,7 +8,7 @@ do
     while IFS= read -r -d '' PP3
     do
         RAW=${PP3%.pp3}
-        if [[ "${PP3}" -nt "${RAW}" ]]
+        if [[ $RAW =~ .*\.(dng|nef) ]] && [[ "${PP3}" -nt "${RAW}" ]]
         then
             echo "Updating thumbnail in ${RAW}..."
             TEMP_FILE=$(mktemp)
@@ -33,6 +33,7 @@ do
             esac
             #exiftool -OtherImage= -JpgFromRaw= -b "-PreviewImage<=${TEMP_FILE}.jpg" -overwrite_original "${RAW}"
             exiftool -b "-PreviewImage<=${TEMP_FILE}.jpg" -overwrite_original "${RAW}"
+            touch "${RAW}"
             rm "${TEMP_FILE}.jpg"
         fi
     done
