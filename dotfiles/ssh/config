@@ -4,7 +4,7 @@ Host *
 	IdentityFile ~/.ssh/id_rsa-backup
 	IdentityFile ~/.ssh/id-minecraft
 
-Host 172.17.*
+Host 172.22.*
 	StrictHostKeyChecking no
 	UserKnownHostsFile /dev/null
 
@@ -49,6 +49,13 @@ Host gustafson-backup
 	IdentityFile ~/.ssh/id_rsa-backup
 	LocalForward 20080 localhost:80
 	LocalForward 28384 192.168.1.4:8384
+
+Host gustafson-backup-reverse
+	HostName localhost
+	Port 22023
+	User root
+	IdentityFile ~/.ssh/id_ed25519-josh
+	ProxyCommand ssh -i ~/.ssh/id_rsa-backup -p 22022 user@jarvis.gustafson.me nc %h %p
 
 Host kvm
 	HostName kvm.gustafson.me
