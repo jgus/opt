@@ -16,6 +16,12 @@ Host 192.168.*
 	StrictHostKeyChecking no
 	UserKnownHostsFile /dev/null
 
+Host router.gustafson.me
+	User root
+	PubkeyAuthentication no
+	PasswordAuthentication yes
+	PreferredAuthentications keyboard-interactive,password
+
 Host github
 	HostName github.com
 	User git
@@ -70,3 +76,7 @@ Host minecraft.gustafson.me
 	User minecraft
 	ForwardAgent yes
 
+Match host *.c.googlers.com
+	ForwardX11 yes
+	ForwardX11Timeout 0
+	Compression yes
