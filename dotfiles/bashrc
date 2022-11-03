@@ -75,6 +75,6 @@ function parse_git_dirty {
 
 export PS1="\[\e[32m\]\u@\h\[\e[m\]:\[\e[33m\]\w\[\e[31m\]\`nonzero_return\`\[\e[m\]\`parse_git_branch\`\[\e[m\]\\$ "
 
-export PATH="$PATH:~/opt/bin"
+export PATH="$PATH:~/.local/bin:~/opt/bin"
 
 [ -r ~/.bashrc_local ] && . ~/.bashrc_local || true
